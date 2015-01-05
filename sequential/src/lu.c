@@ -2,17 +2,17 @@
 
 #include <math.h>
 
-#define DEBUG_VERBOSE_INVERSE 1
+#define DEBUG_VERBOSE_INVERSE 0
 
 SquareMatrix* getL(SquareMatrix *mat)
 {
-    int dim = mat->dimension;
-    SquareMatrix *mat_ret = createIdentityMatrix(dim);
+    int s = mat->size;
+    SquareMatrix *mat_ret = createIdentityMatrix(s);
     double **m_src = mat->matrix;
     double **m_dest = mat_ret->matrix;
     int i, j;
 
-    for (i = 1; i < dim; ++i) {
+    for (i = 1; i < s; ++i) {
         for (j = 0; j < i; ++j) {
             m_dest[i][j] = m_src[i][j];
         }
@@ -22,15 +22,15 @@ SquareMatrix* getL(SquareMatrix *mat)
 }
 SquareMatrix* getU(SquareMatrix *mat)
 {
-    int dim = mat->dimension;
-    SquareMatrix *mat_ret = createMatrix(dim);
+    int s = mat->size;
+    SquareMatrix *mat_ret = createMatrix(s);
     double **m_src = mat->matrix;
     double **m_dest = mat_ret->matrix;
 
     int i, j;
 
-    for (i = 0; i < dim; ++i) {
-        for (j = i; j < dim; ++j) {
+    for (i = 0; i < s; ++i) {
+        for (j = i; j < s; ++j) {
             m_dest[i][j] = m_src[i][j];
         }
     }
@@ -40,9 +40,9 @@ SquareMatrix* getU(SquareMatrix *mat)
 
 SquareMatrix* getLInverse(SquareMatrix *mat_L)
 {
-    int dim = mat_L->dimension;
-    SquareMatrix *mat_ret = createMatrix(dim);
-    SquareMatrix *mat_I = createIdentityMatrix(dim);
+    int s = mat_L->size;
+    SquareMatrix *mat_ret = createMatrix(s);
+    SquareMatrix *mat_I = createIdentityMatrix(s);
 
     double **m_L = mat_L->matrix;
     double **m_I = mat_I->matrix;
@@ -51,9 +51,9 @@ SquareMatrix* getLInverse(SquareMatrix *mat_L)
     int i, k, j;
     double sum;
 
-    for(k = 0; k < dim; ++k)
+    for(k = 0; k < s; ++k)
     {
-        for(i = k; i < dim; ++i)
+        for(i = k; i < s; ++i)
         {
             sum = 0.0;
             for(j = k; j < i; ++j) sum +=  m_L[i][j] * m[j][k];
@@ -67,9 +67,9 @@ SquareMatrix* getLInverse(SquareMatrix *mat_L)
 }
 SquareMatrix* getUInverse(SquareMatrix *mat_U)
 {
-    int dim = mat_U->dimension;
-    SquareMatrix *mat_ret = createMatrix(dim);
-    SquareMatrix *mat_I = createIdentityMatrix(dim);
+    int s = mat_U->size;
+    SquareMatrix *mat_ret = createMatrix(s);
+    SquareMatrix *mat_I = createIdentityMatrix(s);
 
     double **m_U = mat_U->matrix;
     double **m_I = mat_I->matrix;
@@ -78,7 +78,7 @@ SquareMatrix* getUInverse(SquareMatrix *mat_U)
     int i, j, k;
     double sum;
 
-    for(k = 0; k < dim; ++k)
+    for(k = 0; k < s; ++k)
     {
         for(i = k; i >= 0; --i)
         {
@@ -95,7 +95,7 @@ SquareMatrix* getUInverse(SquareMatrix *mat_U)
 
 int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
 {
-    assert(mat_A->dimension == mat_LU->dimension);
+    assert(mat_A->size == mat_LU->size);
 
     double **matrixA = mat_A->matrix;
     double **matrixLU = mat_LU->matrix;
@@ -105,9 +105,9 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
     int i, j, k;
     double sum;
 
-    int dim = mat_A->dimension;
+    int s = mat_A->size;
 
-    for(j = 0; j < dim; ++j)
+    for(j = 0; j < s; ++j)
     {
         for(i = 0; i <= j; ++i)
         {
@@ -115,7 +115,7 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
             for(k = 0; k < i; ++k) sum +=  matrixLU[i][k] * matrixLU[k][j];
             matrixLU[i][j] = matrixA[i][j] - sum;
         }
-        for(i = j + 1; i < dim; ++i)
+        for(i = j + 1; i < s; ++i)
         {
             sum = 0.0;
             for(k = 0; k < j; ++k) sum += matrixLU[i][k] * matrixLU[k][j];
@@ -127,7 +127,7 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
 }
 int cholesky(SquareMatrix *A, SquareMatrix *mat_LU)
 {
-    assert(A->dimension == mat_LU->dimension);
+    assert(A->size == mat_LU->size);
 
     double **matrixA = A->matrix;
     double **matrixLU = mat_LU->matrix;
@@ -137,15 +137,16 @@ int cholesky(SquareMatrix *A, SquareMatrix *mat_LU)
     int i, j, k;
     double sum;
 
-    int dim = A->dimension;
+    int s = A->size;
 
-    for(k = 0; k < dim; ++k){
+    for(k = 0; k < s; ++k){
         sum = 0.0;
         for(j = 0; j < k; ++j) sum += matrixLU[k][j] * matrixLU[k][j];
         matrixLU[k][k] = sqrt(matrixA[k][k] - sum);
-        for(i = k+1; i < dim; ++i){
+        for(i = k+1; i < s; ++i){
             sum = 0.0;
             for(j = 0; j < k; ++j) sum+= matrixLU[i][j] * matrixLU[k][j];
+            assert(matrixLU[k][k] != 0.0);
             matrixLU[i][k] = (matrixA[i][k] - sum) / matrixLU[k][k];
         }
     }
@@ -154,7 +155,7 @@ int cholesky(SquareMatrix *A, SquareMatrix *mat_LU)
 }
 int choleskyRow(SquareMatrix *A, SquareMatrix *mat_LU)
 {
-    assert(A->dimension == mat_LU->dimension);
+    assert(A->size == mat_LU->size);
 
     double **matrixA = A->matrix;
     double **matrixLU = mat_LU->matrix;
@@ -164,10 +165,10 @@ int choleskyRow(SquareMatrix *A, SquareMatrix *mat_LU)
     int i, j, k;
     double sum;
 
-    int dim = A->dimension;
+    int s = A->size;
 
-    for(i = 0; i < dim; ++i){
-        for(j = 0; j < dim; ++j){
+    for(i = 0; i < s; ++i){
+        for(j = 0; j < s; ++j){
             sum = 0.0;
             for(k = 0; k < j; ++k) sum += matrixLU[i][k] * matrixLU[j][k];
             matrixLU[i][j] = (matrixA[i][j] - sum) / matrixLU[j][j];
@@ -182,28 +183,28 @@ int choleskyRow(SquareMatrix *A, SquareMatrix *mat_LU)
 
 SquareMatrix* getInverseMatrixFromLU(SquareMatrix *mat_LU)
 {
-    int dim = mat_LU->dimension;
-    SquareMatrix *mat_ret = createMatrix(dim);
-    SquareMatrix *mat_I = createIdentityMatrix(dim);
+    int s = mat_LU->size;
+    SquareMatrix *mat_ret = createMatrix(s);
+    SquareMatrix *mat_I = createIdentityMatrix(s);
     double **m_LU = mat_LU->matrix;
     double **m_ret = mat_ret->matrix;
     double **m_I = mat_I->matrix;
 
     int i, j, k;
 
-    double sum, y[dim];
+    double sum, y[s];
 
-    for(k = 0; k < dim; k++) {
-        for(i = 0; i < dim; i++) {
+    for(k = 0; k < s; k++) {
+        for(i = 0; i < s; i++) {
             sum = 0.0;
             for(j = 0; j <= i-1; j++) {
                 sum += m_LU[i][j] * y[j];
             }
             y[i] = (m_I[i][k] - sum);
         }
-        for(i = dim-1; i >= 0; i--) {
+        for(i = s-1; i >= 0; i--) {
             sum = 0.0;
-            for(j = i+1; j < dim; j++) {
+            for(j = i+1; j < s; j++) {
                 sum += m_LU[i][j] * m_ret[j][k];
             }
             m_ret[i][k] = (y[i] - sum) / m_LU[i][i];
@@ -217,8 +218,8 @@ SquareMatrix* getInverseMatrixFromLU(SquareMatrix *mat_LU)
 
 SquareMatrix* inverse(SquareMatrix *mat_A)
 {
-    int dim = mat_A->dimension;
-    SquareMatrix *LU = createMatrix(dim);
+    int s = mat_A->size;
+    SquareMatrix *LU = createMatrix(s);
     SquareMatrix *mat_ret;
 
     if(isSymmetric(mat_A)) {

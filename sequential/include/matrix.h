@@ -8,17 +8,17 @@
  *
  */
 typedef struct {
-    int dimension; /**< dimension */
+    int size; /**< size */
     double **matrix; /**< data of matrix */
 } SquareMatrix;
 
 /**
  * @brief Creates a matrix of a given size
  *
- * @param dimension dimension
+ * @param size size
  * @return SquareMatrix
  */
-SquareMatrix* createMatrix(int dimension);
+SquareMatrix* createMatrix(int size);
 /**
  * @brief Creates a matrix based on another
  *
@@ -29,10 +29,10 @@ SquareMatrix* createMatrixFromMatrix(SquareMatrix *src);
 /**
  * @brief Creates an identity matrix
  *
- * @param dimension dimension
+ * @param size size
  * @return SquareMatrix
  */
-SquareMatrix* createIdentityMatrix(int dimension);
+SquareMatrix* createIdentityMatrix(int size);
 
 /**
  * @brief Releases matrix
@@ -47,7 +47,7 @@ void freeMatrix(SquareMatrix *mat);
  * @param dest destination matrix
  * @param matrix[][]
  */
-void fillMatrix(SquareMatrix *dest, double matrix[][dest->dimension]);
+void fillMatrix(SquareMatrix *dest, double matrix[][dest->size]);
 /**
  * @brief Copies matrix
  *
