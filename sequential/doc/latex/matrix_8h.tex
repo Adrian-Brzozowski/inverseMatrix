@@ -1,0 +1,243 @@
+\hypertarget{matrix_8h}{\section{include/matrix.h \-File \-Reference}
+\label{matrix_8h}\index{include/matrix.\-h@{include/matrix.\-h}}
+}
+{\ttfamily \#include $<$assert.\-h$>$}\*
+\subsection*{\-Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structSquareMatrix}{\-Square\-Matrix}
+\begin{DoxyCompactList}\small\item\em \-Structure containing matrix. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$ \hyperlink{matrix_8h_a1cbede49699e621e3faa533765142d0f}{create\-Matrix} (int dimension)
+\begin{DoxyCompactList}\small\item\em \-Creates a matrix of a given size. \end{DoxyCompactList}\item 
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$ \hyperlink{matrix_8h_ae14c575964b51cdf6e90c041c6513ca7}{create\-Matrix\-From\-Matrix} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$src)
+\begin{DoxyCompactList}\small\item\em \-Creates a matrix based on another. \end{DoxyCompactList}\item 
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$ \hyperlink{matrix_8h_a2b9919ccb992a9014f239539cdae6579}{create\-Identity\-Matrix} (int dimension)
+\begin{DoxyCompactList}\small\item\em \-Creates an identity matrix. \end{DoxyCompactList}\item 
+void \hyperlink{matrix_8h_a5faeb2efe4d112cb2f9f3cbe91208d01}{free\-Matrix} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat)
+\begin{DoxyCompactList}\small\item\em \-Releases matrix. \end{DoxyCompactList}\item 
+void \hyperlink{matrix_8h_a80328df6f631e031b488d5203a8fb503}{fill\-Matrix} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$dest, double matrix\mbox{[}$\,$\mbox{]}\mbox{[}dest-\/$>$dimension\mbox{]})
+\begin{DoxyCompactList}\small\item\em \-Fills matrix using an array. \end{DoxyCompactList}\item 
+void \hyperlink{matrix_8h_af743c65885999bfebc4d005e0101ea51}{copy\-Matrix} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$dest, \hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$src)
+\begin{DoxyCompactList}\small\item\em \-Copies matrix. \end{DoxyCompactList}\item 
+void \hyperlink{matrix_8h_a6b4a1569dd06477580e9e910c2cba1b7}{print\-Matrix} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat)
+\begin{DoxyCompactList}\small\item\em \-Print matrix. \end{DoxyCompactList}\item 
+void \hyperlink{matrix_8h_a46bb182bdd597965e91505395bf18d56}{print\-Matrix\-With\-Name} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat, char $\ast$name)
+\begin{DoxyCompactList}\small\item\em \-Print matrix with name. \end{DoxyCompactList}\item 
+int \hyperlink{matrix_8h_a309c9d0e70fb635f489dbfbc9032132a}{is\-Symmetric} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat)
+\begin{DoxyCompactList}\small\item\em \-Checks if the matrix is symmetric. \end{DoxyCompactList}\item 
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$ \hyperlink{matrix_8h_a308d7cbd4e2dee3f7f8e4e132880927d}{transpose} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat)
+\begin{DoxyCompactList}\small\item\em \-Transpose matrix. \end{DoxyCompactList}\item 
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$ \hyperlink{matrix_8h_a8f09344d9f8341cd9d40332d6490eb0b}{multiply} (\hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat\-\_\-1, \hyperlink{structSquareMatrix}{\-Square\-Matrix} $\ast$mat\-\_\-2)
+\begin{DoxyCompactList}\small\item\em \-Multiply matrices. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{matrix_8h_af743c65885999bfebc4d005e0101ea51}{\index{matrix.\-h@{matrix.\-h}!copy\-Matrix@{copy\-Matrix}}
+\index{copy\-Matrix@{copy\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{copy\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf copy\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{dest, }
+\item[{{\bf \-Square\-Matrix} $\ast$}]{src}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_af743c65885999bfebc4d005e0101ea51}
+
+
+\-Copies matrix. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em dest} & destination matrix \\
+\hline
+{\em src} & source matrix \\
+\hline
+\end{DoxyParams}
+\hypertarget{matrix_8h_a2b9919ccb992a9014f239539cdae6579}{\index{matrix.\-h@{matrix.\-h}!create\-Identity\-Matrix@{create\-Identity\-Matrix}}
+\index{create\-Identity\-Matrix@{create\-Identity\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{create\-Identity\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Square\-Matrix}$\ast$ {\bf create\-Identity\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{int}]{dimension}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a2b9919ccb992a9014f239539cdae6579}
+
+
+\-Creates an identity matrix. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em dimension} & dimension \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} 
+\end{DoxyReturn}
+\hypertarget{matrix_8h_a1cbede49699e621e3faa533765142d0f}{\index{matrix.\-h@{matrix.\-h}!create\-Matrix@{create\-Matrix}}
+\index{create\-Matrix@{create\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{create\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Square\-Matrix}$\ast$ {\bf create\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{int}]{dimension}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a1cbede49699e621e3faa533765142d0f}
+
+
+\-Creates a matrix of a given size. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em dimension} & dimension \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} 
+\end{DoxyReturn}
+\hypertarget{matrix_8h_ae14c575964b51cdf6e90c041c6513ca7}{\index{matrix.\-h@{matrix.\-h}!create\-Matrix\-From\-Matrix@{create\-Matrix\-From\-Matrix}}
+\index{create\-Matrix\-From\-Matrix@{create\-Matrix\-From\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{create\-Matrix\-From\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Square\-Matrix}$\ast$ {\bf create\-Matrix\-From\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{src}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_ae14c575964b51cdf6e90c041c6513ca7}
+
+
+\-Creates a matrix based on another. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em src} & source matrix \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} 
+\end{DoxyReturn}
+\hypertarget{matrix_8h_a80328df6f631e031b488d5203a8fb503}{\index{matrix.\-h@{matrix.\-h}!fill\-Matrix@{fill\-Matrix}}
+\index{fill\-Matrix@{fill\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{fill\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf fill\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{dest, }
+\item[{double}]{matrix\mbox{[}$\,$\mbox{]}\mbox{[}dest-\/$>$dimension\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a80328df6f631e031b488d5203a8fb503}
+
+
+\-Fills matrix using an array. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em dest} & destination matrix \\
+\hline
+{\em matrix\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]}} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{matrix_8h_a5faeb2efe4d112cb2f9f3cbe91208d01}{\index{matrix.\-h@{matrix.\-h}!free\-Matrix@{free\-Matrix}}
+\index{free\-Matrix@{free\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{free\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf free\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a5faeb2efe4d112cb2f9f3cbe91208d01}
+
+
+\-Releases matrix. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & matrix \\
+\hline
+\end{DoxyParams}
+\hypertarget{matrix_8h_a309c9d0e70fb635f489dbfbc9032132a}{\index{matrix.\-h@{matrix.\-h}!is\-Symmetric@{is\-Symmetric}}
+\index{is\-Symmetric@{is\-Symmetric}!matrix.h@{matrix.\-h}}
+\subsubsection[{is\-Symmetric}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf is\-Symmetric} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a309c9d0e70fb635f489dbfbc9032132a}
+
+
+\-Checks if the matrix is symmetric. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & matrix \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+int 
+\end{DoxyReturn}
+\hypertarget{matrix_8h_a8f09344d9f8341cd9d40332d6490eb0b}{\index{matrix.\-h@{matrix.\-h}!multiply@{multiply}}
+\index{multiply@{multiply}!matrix.h@{matrix.\-h}}
+\subsubsection[{multiply}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Square\-Matrix}$\ast$ {\bf multiply} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat\-\_\-1, }
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat\-\_\-2}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a8f09344d9f8341cd9d40332d6490eb0b}
+
+
+\-Multiply matrices. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat\-\_\-1} & matrix \\
+\hline
+{\em mat\-\_\-2} & matrix \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} 
+\end{DoxyReturn}
+\hypertarget{matrix_8h_a6b4a1569dd06477580e9e910c2cba1b7}{\index{matrix.\-h@{matrix.\-h}!print\-Matrix@{print\-Matrix}}
+\index{print\-Matrix@{print\-Matrix}!matrix.h@{matrix.\-h}}
+\subsubsection[{print\-Matrix}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf print\-Matrix} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a6b4a1569dd06477580e9e910c2cba1b7}
+
+
+\-Print matrix. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & matrix \\
+\hline
+\end{DoxyParams}
+\hypertarget{matrix_8h_a46bb182bdd597965e91505395bf18d56}{\index{matrix.\-h@{matrix.\-h}!print\-Matrix\-With\-Name@{print\-Matrix\-With\-Name}}
+\index{print\-Matrix\-With\-Name@{print\-Matrix\-With\-Name}!matrix.h@{matrix.\-h}}
+\subsubsection[{print\-Matrix\-With\-Name}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf print\-Matrix\-With\-Name} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat, }
+\item[{char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a46bb182bdd597965e91505395bf18d56}
+
+
+\-Print matrix with name. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & matrix \\
+\hline
+{\em name} & name \\
+\hline
+\end{DoxyParams}
+\hypertarget{matrix_8h_a308d7cbd4e2dee3f7f8e4e132880927d}{\index{matrix.\-h@{matrix.\-h}!transpose@{transpose}}
+\index{transpose@{transpose}!matrix.h@{matrix.\-h}}
+\subsubsection[{transpose}]{\setlength{\rightskip}{0pt plus 5cm}{\bf \-Square\-Matrix}$\ast$ {\bf transpose} (
+\begin{DoxyParamCaption}
+\item[{{\bf \-Square\-Matrix} $\ast$}]{mat}
+\end{DoxyParamCaption}
+)}}\label{matrix_8h_a308d7cbd4e2dee3f7f8e4e132880927d}
+
+
+\-Transpose matrix. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & matrix \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\hyperlink{structSquareMatrix}{\-Square\-Matrix} 
+\end{DoxyReturn}
