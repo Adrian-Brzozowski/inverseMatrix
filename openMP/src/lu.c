@@ -3,6 +3,7 @@
 #include <math.h>
 
 #define DEBUG_VERBOSE_INVERSE 0
+#define DEBUG_LU_DECOMPOSITION_TEST 1
 
 SquareMatrix* getL(SquareMatrix *mat)
 {
@@ -10,8 +11,9 @@ SquareMatrix* getL(SquareMatrix *mat)
     SquareMatrix *mat_ret = createIdentityMatrix(s);
     long double **m_src = mat->matrix;
     long double **m_dest = mat_ret->matrix;
-    int i, j;
 
+    int i, j;
+#pragma omp parallel for private(i, j) shared(s, m_dest, m_src)
     for (i = 1; i < s; ++i) {
         for (j = 0; j < i; ++j) {
             m_dest[i][j] = m_src[i][j];
@@ -29,7 +31,7 @@ SquareMatrix* getU(SquareMatrix *mat)
     long double **m_dest = mat_ret->matrix;
 
     int i, j;
-
+#pragma omp parallel for private(i, j) shared(s, m_dest, m_src)
     for (i = 0; i < s; ++i) {
         for (j = i; j < s; ++j) {
             m_dest[i][j] = m_src[i][j];
@@ -51,7 +53,7 @@ SquareMatrix* getLInverse(SquareMatrix *mat_L)
 
     int i, k, j;
     long double sum;
-
+#pragma omp parallel for private(i, j, k) shared(s, m, m_I, m_L) reduction(+:sum)
     for(k = 0; k < s; ++k)
     {
         for(i = k; i < s; ++i)
@@ -78,7 +80,7 @@ SquareMatrix* getUInverse(SquareMatrix *mat_U)
 
     int i, j, k;
     long double sum;
-
+#pragma omp parallel for private(i, j, k) shared(s, m, m_I, m_U) reduction(+:sum)
     for(k = 0; k < s; ++k)
     {
         for(i = k; i >= 0; --i)
@@ -107,13 +109,14 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
     long double sum;
 
     int s = mat_A->size;
-
     for(j = 0; j < s; ++j)
     {
         for(i = 0; i <= j; ++i)
         {
             sum = 0.0;
-            for(k = 0; k < i; ++k) sum +=  matrixLU[i][k] * matrixLU[k][j];
+            for(k = 0; k < i; ++k) {
+                sum +=  matrixLU[i][k] * matrixLU[k][j];
+            }
             matrixLU[i][j] = matrixA[i][j] - sum;
         }
         for(i = j + 1; i < s; ++i)
@@ -223,7 +226,7 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
     SquareMatrix *LU = createMatrix(s);
     SquareMatrix *mat_ret;
 
-    if(/*isSymmetric(mat_A)*/ 0) {
+    if(0 && isSymmetric(mat_A)) {
         cholesky(mat_A, LU);
 
         SquareMatrix *L_1 = getLInverse(LU);
@@ -245,6 +248,16 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
 
         SquareMatrix *L = getL(LU);
         SquareMatrix *U = getU(LU);
+#if DEBUG_LU_DECOMPOSITION_TEST
+        SquareMatrix *A_ = multiply(L, U);
+//        printMatrixWithName(mat_A, "A");
+//        printMatrixWithName(A_, "A'");
+
+        int cI = checkIdentity(mat_A, A_);
+        printf("%s\n", cI == 0 ? "A == A'" : (cI > 1 ? "A < A'" : "A < A'"));
+
+        freeMatrix(A_);
+#endif
         SquareMatrix *L_1 = getLInverse(L);
         SquareMatrix *U_1 = getUInverse(U);
 

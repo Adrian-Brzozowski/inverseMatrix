@@ -30,4 +30,4 @@ SET(project_HEADERS
 )
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${project_HEADERS} ${project_SOURCE})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} m)
+target_link_libraries(${PROJECT_NAME} m)

@@ -3,13 +3,14 @@
 #include <math.h>
 
 #define DEBUG_VERBOSE_INVERSE 0
+#define DEBUG_LU_DECOMPOSITION_TEST 1
 
 SquareMatrix* getL(SquareMatrix *mat)
 {
     int s = mat->size;
     SquareMatrix *mat_ret = createIdentityMatrix(s);
-    double **m_src = mat->matrix;
-    double **m_dest = mat_ret->matrix;
+    long double **m_src = mat->matrix;
+    long double **m_dest = mat_ret->matrix;
     int i, j;
 
     for (i = 1; i < s; ++i) {
@@ -20,12 +21,13 @@ SquareMatrix* getL(SquareMatrix *mat)
 
     return mat_ret;
 }
+
 SquareMatrix* getU(SquareMatrix *mat)
 {
     int s = mat->size;
     SquareMatrix *mat_ret = createMatrix(s);
-    double **m_src = mat->matrix;
-    double **m_dest = mat_ret->matrix;
+    long double **m_src = mat->matrix;
+    long double **m_dest = mat_ret->matrix;
 
     int i, j;
 
@@ -44,12 +46,12 @@ SquareMatrix* getLInverse(SquareMatrix *mat_L)
     SquareMatrix *mat_ret = createMatrix(s);
     SquareMatrix *mat_I = createIdentityMatrix(s);
 
-    double **m_L = mat_L->matrix;
-    double **m_I = mat_I->matrix;
-    double **m = mat_ret->matrix;
+    long double **m_L = mat_L->matrix;
+    long double **m_I = mat_I->matrix;
+    long double **m = mat_ret->matrix;
 
     int i, k, j;
-    double sum;
+    long double sum;
 
     for(k = 0; k < s; ++k)
     {
@@ -71,12 +73,12 @@ SquareMatrix* getUInverse(SquareMatrix *mat_U)
     SquareMatrix *mat_ret = createMatrix(s);
     SquareMatrix *mat_I = createIdentityMatrix(s);
 
-    double **m_U = mat_U->matrix;
-    double **m_I = mat_I->matrix;
-    double **m = mat_ret->matrix;
+    long double **m_U = mat_U->matrix;
+    long double **m_I = mat_I->matrix;
+    long double **m = mat_ret->matrix;
 
     int i, j, k;
-    double sum;
+    long double sum;
 
     for(k = 0; k < s; ++k)
     {
@@ -97,13 +99,13 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
 {
     assert(mat_A->size == mat_LU->size);
 
-    double **matrixA = mat_A->matrix;
-    double **matrixLU = mat_LU->matrix;
+    long double **matrixA = mat_A->matrix;
+    long double **matrixLU = mat_LU->matrix;
 
     int ret = 0;
 
     int i, j, k;
-    double sum;
+    long double sum;
 
     int s = mat_A->size;
 
@@ -129,13 +131,13 @@ int cholesky(SquareMatrix *A, SquareMatrix *mat_LU)
 {
     assert(A->size == mat_LU->size);
 
-    double **matrixA = A->matrix;
-    double **matrixLU = mat_LU->matrix;
+    long double **matrixA = A->matrix;
+    long double **matrixLU = mat_LU->matrix;
 
     int ret = 0;
 
     int i, j, k;
-    double sum;
+    long double sum;
 
     int s = A->size;
 
@@ -157,13 +159,13 @@ int choleskyRow(SquareMatrix *A, SquareMatrix *mat_LU)
 {
     assert(A->size == mat_LU->size);
 
-    double **matrixA = A->matrix;
-    double **matrixLU = mat_LU->matrix;
+    long double **matrixA = A->matrix;
+    long double **matrixLU = mat_LU->matrix;
 
     int ret = 0;
 
     int i, j, k;
-    double sum;
+    long double sum;
 
     int s = A->size;
 
@@ -186,13 +188,13 @@ SquareMatrix* getInverseMatrixFromLU(SquareMatrix *mat_LU)
     int s = mat_LU->size;
     SquareMatrix *mat_ret = createMatrix(s);
     SquareMatrix *mat_I = createIdentityMatrix(s);
-    double **m_LU = mat_LU->matrix;
-    double **m_ret = mat_ret->matrix;
-    double **m_I = mat_I->matrix;
+    long double **m_LU = mat_LU->matrix;
+    long double **m_ret = mat_ret->matrix;
+    long double **m_I = mat_I->matrix;
 
     int i, j, k;
 
-    double sum, y[s];
+    long double sum, y[s];
 
     for(k = 0; k < s; k++) {
         for(i = 0; i < s; i++) {
@@ -222,11 +224,11 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
     SquareMatrix *LU = createMatrix(s);
     SquareMatrix *mat_ret;
 
-    if(isSymmetric(mat_A)) {
+    if(0 && isSymmetric(mat_A)) {
         cholesky(mat_A, LU);
 
-        SquareMatrix *L_1 =  getLInverse(LU);
-        SquareMatrix *L_1_T =  transpose(L_1);
+        SquareMatrix *L_1 = getLInverse(LU);
+        SquareMatrix *L_1_T = transpose(L_1);
 
         mat_ret =  multiply(L_1_T, L_1);
 
@@ -244,6 +246,16 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
 
         SquareMatrix *L = getL(LU);
         SquareMatrix *U = getU(LU);
+#if DEBUG_LU_DECOMPOSITION_TEST
+        SquareMatrix *A_ = multiply(L, U);
+//        printMatrixWithName(mat_A, "A");
+//        printMatrixWithName(A_, "A'");
+
+        int cI = checkIdentity(mat_A, A_);
+        printf("%s\n", cI == 0 ? "A == A'" : (cI > 1 ? "A < A'" : "A < A'"));
+
+        freeMatrix(A_);
+#endif
         SquareMatrix *L_1 = getLInverse(L);
         SquareMatrix *U_1 = getUInverse(U);
 
@@ -264,7 +276,7 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
     }
 
 #if DEBUG_VERBOSE_INVERSE
-    printMatrixWithName(mat_ret, "A^(-1)");
+        printMatrixWithName(mat_ret, "A^(-1)");
 #endif
     freeMatrix(LU);
 

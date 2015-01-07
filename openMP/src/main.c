@@ -4,11 +4,9 @@
 #include <errno.h>
 #include <sys/time.h>
 
-#include <omp.h>
-
 #include "lu.h"
 
-void generateMatrix(int n, long double matrix[][n]);
+void generateMatrix(int n, long double *matrix[]);
 void saveResults(int size, struct timeval begin, struct timeval end);
 void ShowUsage ()
 {
@@ -73,10 +71,11 @@ int main(int argc, char *argv[])
             gettimeofday(&begin, NULL);
             SquareMatrix *A_1 = inverse(A);
             gettimeofday(&end, NULL);
-            saveResults(n ? n : 4, begin, end);
+            printf("%f\n", (double)((end.tv_sec - begin.tv_sec) + (end.tv_usec - begin.tv_usec) * 0.000001));
+//            saveResults(n ? n : 4, begin, end);
 
-            //            printMatrixWithName(A_1, "A^(-1)");
-            //            printMatrix(A_1);
+//            printMatrixWithName(A_1, "A^(-1)");
+//            printMatrix(A_1);
 
             freeMatrix(A);
             freeMatrix(A_1);
@@ -88,7 +87,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void generateMatrix(int n, long double matrix[n][n])
+void generateMatrix(int n, long double *matrix[])
 {
     int i, j;
 #pragma omp parallel for private(i, j) shared(matrix, n)
@@ -97,8 +96,8 @@ void generateMatrix(int n, long double matrix[n][n])
             matrix[i][j] = 1.0 / (i + j + 1.0);
         }
     }
-
 }
+
 void saveResults(int size, struct timeval begin, struct timeval end)
 {
     FILE *fp = fopen("output.txt","a+");

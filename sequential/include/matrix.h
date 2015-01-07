@@ -9,7 +9,7 @@
  */
 typedef struct {
     int size; /**< size */
-    double **matrix; /**< data of matrix */
+    long double **matrix; /**< data of matrix */
 } SquareMatrix;
 
 /**
@@ -47,7 +47,8 @@ void freeMatrix(SquareMatrix *mat);
  * @param dest destination matrix
  * @param matrix[][]
  */
-void fillMatrix(SquareMatrix *dest, double matrix[][dest->size]);
+void fillMatrix(SquareMatrix *dest, long double matrix[][dest->size]);
+void fillMatrixDynamicArray(SquareMatrix *dest, long double *matrix[]);
 /**
  * @brief Copies matrix
  *
@@ -93,6 +94,6 @@ SquareMatrix* transpose(SquareMatrix *mat);
  * @return SquareMatrix
  */
 SquareMatrix* multiply(SquareMatrix *mat_1, SquareMatrix *mat_2);
+int checkIdentity(SquareMatrix *mat_1, SquareMatrix *mat_2);
 
 #endif
-

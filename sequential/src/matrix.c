@@ -6,13 +6,13 @@
 
 void printMatrix(SquareMatrix *mat)
 {
-    double **m = mat->matrix;
+    long double **m = mat->matrix;
     int s = mat->size;
     int i, j;
 
     for (i = 0; i < s; ++i) {
         for (j = 0; j < s; ++j) {
-            printf("%f ", m[i][j]);
+            printf("%Lf ", m[i][j]);
         }
         printf("\n");
     }
@@ -27,9 +27,9 @@ SquareMatrix* createMatrix(int size)
 {
     SquareMatrix *mat = malloc(sizeof(SquareMatrix));
     mat->size = size;
-    mat->matrix = calloc(size, sizeof(double*));
+    mat->matrix = calloc(size, sizeof(long double*));
 
-    double **matrix = mat->matrix;
+    long double **matrix = mat->matrix;
     int i;
 
     for (i = 0; i < size; ++i) {
@@ -48,7 +48,7 @@ SquareMatrix* createMatrixFromMatrix(SquareMatrix *src)
 SquareMatrix* createIdentityMatrix(int size)
 {
     SquareMatrix *mat = createMatrix(size);
-    double **m = mat->matrix;
+    long double **m = mat->matrix;
     int i;
 
     for (i = 0; i < mat->size; ++i) {
@@ -61,8 +61,8 @@ SquareMatrix* transpose(SquareMatrix *mat)
 {
     int s = mat->size;
     SquareMatrix *mat_ret = createMatrix(s);
-    double **m_ret = mat_ret->matrix;
-    double **m = mat->matrix;
+    long double **m_ret = mat_ret->matrix;
+    long double **m = mat->matrix;
     int i, j;
 
     for(i = 0; i < s; ++i) {
@@ -83,22 +83,33 @@ void freeMatrix(SquareMatrix *mat)
 
     free(mat);
 }
-void fillMatrix(SquareMatrix *dest, double matrix[][dest->size])
+void fillMatrix(SquareMatrix *dest, long double matrix[][dest->size])
 {
     int s = dest->size;
-    double **mat = dest->matrix;
-    int i;
+    long double **mat = dest->matrix;
 
+    int i;
     int sizeOfCell = sizeof(**mat);
     for (i = 0; i < s; ++i) {
         memcpy(mat[i], *(matrix+i), s * sizeOfCell);
     }
 }
+void fillMatrixDynamicArray(SquareMatrix *dest, long double *matrix[])
+{
+    int s = dest->size;
+    long double **mat = dest->matrix;
+
+    int i;
+    int sizeOfCell = sizeof(**mat);
+    for (i = 0; i < s; ++i) {
+        memcpy(mat[i], matrix[i], s * sizeOfCell);
+    }
+}
 void copyMatrix(SquareMatrix *dest, SquareMatrix *src)
 {
     int s = dest->size;
-    double **mat = dest->matrix;
-    double **mat_Src = src->matrix;
+    long double **mat = dest->matrix;
+    long double **mat_Src = src->matrix;
     int i;
 
     for (i = 0; i < s; ++i) {
@@ -111,9 +122,9 @@ SquareMatrix* multiply(SquareMatrix *mat_1, SquareMatrix *mat_2)
 
     int s = mat_1->size;
     SquareMatrix *mat = createMatrix(s);
-    double **m_1 = mat_1->matrix;
-    double **m_2 = mat_2->matrix;
-    double **m = mat->matrix;
+    long double **m_1 = mat_1->matrix;
+    long double **m_2 = mat_2->matrix;
+    long double **m = mat->matrix;
 
     int i, j, k;
 
@@ -131,7 +142,7 @@ int isSymmetric(SquareMatrix *mat)
 {
     int ret = 1;
     int s = mat->size;
-    double **m = mat->matrix;
+    long double **m = mat->matrix;
 
     int i, j;
 
@@ -139,12 +150,36 @@ int isSymmetric(SquareMatrix *mat)
         for (j = i + 1; j < s; ++j) {
             if (m[i][j] != m[j][i]) {
                 ret = 0;
-                goto end;
+                break;
             }
         }
     }
 
-end:
+    return ret;
+}
+int checkIdentity(SquareMatrix *mat_1, SquareMatrix *mat_2)
+{
+    int ret = 0;
+
+    int s_1 = mat_1->size;
+    int s_2 = mat_2->size;
+
+    if (s_1 > s_2) return -1;
+    else if (s_1 < s_2) return 1;
+
+    long double **m_1 = mat_1->matrix;
+    long double **m_2 = mat_2->matrix;
+
+    int i, j;
+
+    for (i = 0; i < s_1; ++i) {
+        for (j = 0; j < s_1; ++j) {
+            if (m_1[i][j] != m_2[i][j]) {
+                if (m_1[i][j] > m_2[i][j]) return -1;
+                else if (m_1[i][j] < m_2[i][j]) return 1;
+            }
+        }
+    }
 
     return ret;
 }

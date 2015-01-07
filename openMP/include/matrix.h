@@ -94,6 +94,7 @@ SquareMatrix* transpose(SquareMatrix *mat);
  * @return SquareMatrix
  */
 SquareMatrix* multiply(SquareMatrix *mat_1, SquareMatrix *mat_2);
+int checkIdentity(SquareMatrix *mat_1, SquareMatrix *mat_2);
 
 #endif
 
