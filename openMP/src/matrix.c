@@ -6,6 +6,8 @@
 
 #include "matrix.h"
 
+#define MAXERRORCOMPARING 0.00001
+
 void printMatrix(SquareMatrix *mat)
 {
     long double **m = mat->matrix;
@@ -29,13 +31,17 @@ SquareMatrix* createMatrix(int size)
 {
     SquareMatrix *mat = malloc(sizeof(SquareMatrix));
     mat->size = size;
-    mat->matrix = calloc(size, sizeof(long double*));
+
+    long double *data = (long double *)calloc(size * size, sizeof(long double)); // contiguous memory
+    if (data == NULL) { perror("Allocation failed"); return mat; }
+    mat->matrix = (long double **)calloc(size, sizeof(long double*));
+    if (mat->matrix == NULL) { perror("Allocation failed"); return mat; }
 
     long double **matrix = mat->matrix;
     int i;
 #pragma omp parallel for private(i) shared(matrix, size)
     for (i = 0; i < size; ++i) {
-        matrix[i] = calloc(size, sizeof(**matrix));
+        matrix[i] =  &(data[size*i]);
     }
 
     return mat;
@@ -78,12 +84,8 @@ SquareMatrix* transpose(SquareMatrix *mat)
 
 void freeMatrix(SquareMatrix *mat)
 {
-    int i;
-#pragma omp parallel for private(i) shared(mat)
-    for(i = 0; i < mat->size; ++i)
-        free(mat->matrix[i]);
+    free(mat->matrix[0]);
     free(mat->matrix);
-
     free(mat);
 }
 void fillMatrix(SquareMatrix *dest, long double matrix[][dest->size])

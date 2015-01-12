@@ -30,8 +30,6 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
-    printf("Jestem sobie proces %d\n", my_rank);
-
     if ((argc < 2) || strcmp (argv[1], "-h") == 0 || strcmp (argv[1], "-help") == 0 ||
             strcmp (argv[1], "--help") == 0) {
         ShowUsage ();
@@ -59,9 +57,6 @@ int main(int argc, char *argv[])
 
                 A = createMatrix(4);
                 fillMatrix(A, matrixToInverse);
-
-                //                printf ("proces %d\n", my_rank);
-                //                printMatrixWithName(A, "A");
             }
             else {
                 long double **matrixToInverse;
@@ -87,16 +82,15 @@ int main(int argc, char *argv[])
 
             SquareMatrix *A_1 = inverse(A);
 
-            //            MPI_Abort(MPI_COMM_WORLD, );
-            if (my_rank == ROOT_ID)
+            MPI_Barrier(MPI_COMM_WORLD);
+            if (my_rank == ROOT_ID) {
                 gettimeofday(&end, NULL);
-            if (my_rank == ROOT_ID) {
-                printf("Wynik %f\n", (double)((end.tv_sec - begin.tv_sec) + (end.tv_usec - begin.tv_usec) * 0.000001));
+                saveResults(n ? n : 4, begin, end);
             }
-            //            saveResults(n ? n : 4, begin, end);
-            if (my_rank == ROOT_ID) {
-                //                printMatrix(A_1);
-            }
+
+            //            if (my_rank == ROOT_ID) {
+            //                printMatrix(A_1);
+            //            }
 
             freeMatrix(A);
             freeMatrix(A_1);
@@ -105,10 +99,8 @@ int main(int argc, char *argv[])
         ShowUsage ();
     }
 
-
-    //    printf("\t KONIEC proces %d\n", my_rank);
-
     MPI_Finalize();
+
 
     return 0;
 }
@@ -130,6 +122,7 @@ void saveResults(int size, struct timeval begin, struct timeval end)
     if (fp == NULL) perror ("Error opening file");
     else {
         fprintf(fp,"%d ", size);
+        fprintf(fp,"%d ", numprocs);
         fprintf(fp,"%f\n", (double)((end.tv_sec - begin.tv_sec) + (end.tv_usec - begin.tv_usec) * 0.000001));
         fclose(fp);
     }

@@ -51,19 +51,20 @@ int main(int argc, char *argv[])
             }
             else {
                 long double **matrixToInverse;
-
                 int i;
-                matrixToInverse = (long double **)calloc(n, sizeof(long double*));
-                if (matrixToInverse == NULL) { perror("Allocation failed"); return ENOMEM; }
-                for (i = 0; i < n; ++i) {
-                    matrixToInverse[i] = (long double *)calloc(n, sizeof(long double));
-                    if (matrixToInverse[i] == NULL) { perror("Allocation failed"); printf("%d", errno); return ENOMEM; }
-                }
+
+                long double *data = (long double *) calloc(n *n, sizeof(long double)); // contigous memory
+                matrixToInverse = (long double **)calloc(n, sizeof(long double *));
+                for (i = 0; i < n; ++i)
+                    matrixToInverse[i] = &(data[n*i]);
 
                 generateMatrix(n, matrixToInverse);
 
                 A = createMatrix(n);
                 fillMatrixDynamicArray(A, matrixToInverse);
+
+                free(matrixToInverse[0]);
+                free(matrixToInverse);
             }
 //            printMatrixWithName(A, "A");
 

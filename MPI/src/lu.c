@@ -85,18 +85,18 @@ SquareMatrix* getLInverse(SquareMatrix *mat_L)
     {
         for(i = k; i < s; ++i)
         {
-//            mySum = 0.0;
-//            chunk = (i-k) / numprocs;
-//            procTest = (i-k) % numprocs;
-//            /* divide loop */
-//            jMin = k + chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
-//            jMax = jMin + chunk + (procTest > my_rank);
+            mySum = 0.0;
+            chunk = (i-k) / numprocs;
+            procTest = (i-k) % numprocs;
+            /* divide loop */
+            jMin = k + chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
+            jMax = jMin + chunk + (procTest > my_rank);
 
-//            for(j = jMin; j < jMax; ++j) mySum +=  m_L[i][j] * m[j][k];
-//            MPI_Allreduce(&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+            for(j = jMin; j < jMax; ++j) mySum +=  m_L[i][j] * m[j][k];
+            MPI_Allreduce(&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
-                        sum = 0.0;
-                        for(j = k; j < i; ++j) sum +=  m_L[i][j] * m[j][k];
+//            sum = 0.0;
+//            for(j = k; j < i; ++j) sum +=  m_L[i][j] * m[j][k];
 
             m[i][k] = (m_I[i][k] - sum) / m_L[i][i];
 
@@ -130,18 +130,18 @@ SquareMatrix* getUInverse(SquareMatrix *mat_U)
     {
         for(i = k; i >= 0; --i)
         {
-//            mySum = 0.0;
-//            chunk = (k-i) / numprocs;
-//            procTest = (k-i) % numprocs;
-//            /* divide loop */
-//            jMin = i+1 +chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
-//            jMax = jMin + chunk + (procTest > my_rank);
+            mySum = 0.0;
+            chunk = (k-i) / numprocs;
+            procTest = (k-i) % numprocs;
+            /* divide loop */
+            jMin = i+1 +chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
+            jMax = jMin + chunk + (procTest > my_rank);
 
-//            for(j =jMin; j < jMax ; ++j) mySum +=  m_U[i][j] * m[j][k];
-//            MPI_Allreduce (&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+            for(j =jMin; j < jMax ; ++j) mySum +=  m_U[i][j] * m[j][k];
+            MPI_Allreduce (&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
-                        sum = 0.0;
-                        for(j = i+1; j <= k; ++j) sum +=  m_U[i][j] * m[j][k];
+//            sum = 0.0;
+//            for(j = i+1; j <= k; ++j) sum +=  m_U[i][j] * m[j][k];
 
             m[i][k] = (m_I[i][k] - sum) / m_U[i][i];
         }
@@ -176,33 +176,33 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
     {
         for(i = 0; i <= j; ++i)
         {
-//            mySum = 0.0;
-//            chunk = i / numprocs;
-//            procTest = i % numprocs;
-//            /* divide loop */
-//            kMin = chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
-//            kMax = kMin + chunk + (procTest > my_rank);
+            mySum = 0.0;
+            chunk = i / numprocs;
+            procTest = i % numprocs;
+            /* divide loop */
+            kMin = chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
+            kMax = kMin + chunk + (procTest > my_rank);
 
-//            for(k = kMin; k < kMax; ++k) mySum +=  matrixLU[i][k] * matrixLU[k][j];
-//            MPI_Allreduce (&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+            for(k = kMin; k < kMax; ++k) mySum +=  matrixLU[i][k] * matrixLU[k][j];
+            MPI_Allreduce (&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
-                        sum = 0.0;
-                        for(k = 0; k < i; ++k) sum +=  matrixLU[i][k] * matrixLU[k][j];
+//            sum = 0.0;
+//            for(k = 0; k < i; ++k) sum +=  matrixLU[i][k] * matrixLU[k][j];
             matrixLU[i][j] = matrixA[i][j] - sum;
         }
         for(i = j + 1; i < s; ++i)
         {
-//            mySum = 0.0;
-//            chunk = j / numprocs;
-//            procTest = j % numprocs;
-//            /* divide loop */
-//            kMin = chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
-//            kMax = kMin + chunk + (procTest > my_rank);
+            mySum = 0.0;
+            chunk = j / numprocs;
+            procTest = j % numprocs;
+            /* divide loop */
+            kMin = chunk * my_rank + (procTest < my_rank ? procTest : my_rank);
+            kMax = kMin + chunk + (procTest > my_rank);
 
-//            for(k = kMin; k < kMax; ++k) mySum += matrixLU[i][k] * matrixLU[k][j];
-//            MPI_Allreduce (&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-                        sum = 0.0;
-                        for(k = 0; k < j; ++k) sum += matrixLU[i][k] * matrixLU[k][j];
+            for(k = kMin; k < kMax; ++k) mySum += matrixLU[i][k] * matrixLU[k][j];
+            MPI_Allreduce (&mySum, &sum, 1, MPI_LONG_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+//            sum = 0.0;
+//            for(k = 0; k < j; ++k) sum += matrixLU[i][k] * matrixLU[k][j];
             matrixLU[i][j] = (matrixA[i][j] - sum) / matrixLU[j][j];
         }
     }
@@ -347,12 +347,12 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
         mat_ret = multiply(U_1, L_1);
 
         if (my_rank == ROOT_ID) {
-//            printMatrixWithName(LU, "LU cholesky");
-//            printMatrixWithName(L, "L");
-//            printMatrixWithName(U, "U");
-//            printMatrixWithName(L_1, "L^(-1)");
-//            printMatrixWithName(U_1, "U^(-1)");
-//            printMatrixWithName(mat_ret, "A^(-1)");
+            //            printMatrixWithName(LU, "LU cholesky");
+            //            printMatrixWithName(L, "L");
+            //            printMatrixWithName(U, "U");
+            //            printMatrixWithName(L_1, "L^(-1)");
+            //            printMatrixWithName(U_1, "U^(-1)");
+            //            printMatrixWithName(mat_ret, "A^(-1)");
         }
 
 #if DEBUG_VERBOSE_INVERSE

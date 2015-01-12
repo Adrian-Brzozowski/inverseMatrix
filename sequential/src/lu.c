@@ -3,7 +3,7 @@
 #include <math.h>
 
 #define DEBUG_VERBOSE_INVERSE 0
-#define DEBUG_LU_DECOMPOSITION_TEST 1
+#define DEBUG_LU_DECOMPOSITION_TEST 0
 
 SquareMatrix* getL(SquareMatrix *mat)
 {

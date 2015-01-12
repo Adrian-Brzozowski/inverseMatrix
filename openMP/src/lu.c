@@ -3,7 +3,7 @@
 #include <math.h>
 
 #define DEBUG_VERBOSE_INVERSE 0
-#define DEBUG_LU_DECOMPOSITION_TEST 1
+#define DEBUG_LU_DECOMPOSITION_TEST 0
 
 SquareMatrix* getL(SquareMatrix *mat)
 {
@@ -114,6 +114,7 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
         for(i = 0; i <= j; ++i)
         {
             sum = 0.0;
+//            #pragma omp parallel for firstprivate(i, j) private(k) shared(matrixLU) reduction(+:sum)
             for(k = 0; k < i; ++k) {
                 sum +=  matrixLU[i][k] * matrixLU[k][j];
             }
@@ -122,7 +123,10 @@ int doolittle(SquareMatrix *mat_A, SquareMatrix *mat_LU)
         for(i = j + 1; i < s; ++i)
         {
             sum = 0.0;
-            for(k = 0; k < j; ++k) sum += matrixLU[i][k] * matrixLU[k][j];
+//            #pragma omp parallel for firstprivate(i, j) private(k) shared(matrixLU) reduction(+:sum)
+            for(k = 0; k < j; ++k) {
+                sum += matrixLU[i][k] * matrixLU[k][j];
+            }
             matrixLU[i][j] = (matrixA[i][j] - sum) / matrixLU[j][j];
         }
     }
@@ -143,13 +147,19 @@ int cholesky(SquareMatrix *A, SquareMatrix *mat_LU)
 
     int s = A->size;
 
-    for(k = 0; k < s; ++k){
+    for(k = 0; k < s; ++k) {
         sum = 0.0;
-        for(j = 0; j < k; ++j) sum += matrixLU[k][j] * matrixLU[k][j];
+        //#pragma omp parallel for firstprivate(k) private(j) shared(matrixLU) reduction(+:sum)
+        for(j = 0; j < k; ++j) {
+            sum += matrixLU[k][j] * matrixLU[k][j];
+        }
         matrixLU[k][k] = sqrt(matrixA[k][k] - sum);
         for(i = k+1; i < s; ++i){
             sum = 0.0;
-            for(j = 0; j < k; ++j) sum+= matrixLU[i][j] * matrixLU[k][j];
+            //#pragma omp parallel for firstprivate(i, k) private(j) shared(matrixLU) reduction(+:sum)
+            for(j = 0; j < k; ++j) {
+                sum+= matrixLU[i][j] * matrixLU[k][j];
+            }
             assert(matrixLU[k][k] != 0.0);
             matrixLU[i][k] = (matrixA[i][k] - sum) / matrixLU[k][k];
         }
@@ -174,11 +184,17 @@ int choleskyRow(SquareMatrix *A, SquareMatrix *mat_LU)
     for(i = 0; i < s; ++i){
         for(j = 0; j < s; ++j){
             sum = 0.0;
-            for(k = 0; k < j; ++k) sum += matrixLU[i][k] * matrixLU[j][k];
+            //#pragma omp parallel for firstprivate(i, j) private(k) shared(matrixLU) reduction(+:sum)
+            for(k = 0; k < j; ++k) {
+                sum += matrixLU[i][k] * matrixLU[j][k];
+            }
             matrixLU[i][j] = (matrixA[i][j] - sum) / matrixLU[j][j];
         }
         sum = 0.0;
-        for(k = 0; k < i; ++k) sum += matrixLU[i][k] * matrixLU[i][k];
+        //#pragma omp parallel for firstprivate(i) private(k) shared(matrixLU) reduction(+:sum)
+        for(k = 0; k < i; ++k) {
+            sum += matrixLU[i][k] * matrixLU[i][k];
+        }
         matrixLU[i][i] = sqrt(matrixA[i][i] - sum);
     }
 
@@ -201,6 +217,7 @@ SquareMatrix* getInverseMatrixFromLU(SquareMatrix *mat_LU)
     for(k = 0; k < s; k++) {
         for(i = 0; i < s; i++) {
             sum = 0.0;
+#pragma omp parallel for firstprivate(k, i) private(j) shared(m_LU, y) reduction(+:sum)
             for(j = 0; j <= i-1; j++) {
                 sum += m_LU[i][j] * y[j];
             }
@@ -208,6 +225,7 @@ SquareMatrix* getInverseMatrixFromLU(SquareMatrix *mat_LU)
         }
         for(i = s-1; i >= 0; i--) {
             sum = 0.0;
+#pragma omp parallel for firstprivate(k, i) private(j) shared(m_LU, m_ret) reduction(+:sum)
             for(j = i+1; j < s; j++) {
                 sum += m_LU[i][j] * m_ret[j][k];
             }
@@ -250,9 +268,10 @@ SquareMatrix* inverse(SquareMatrix *mat_A)
         SquareMatrix *U = getU(LU);
 #if DEBUG_LU_DECOMPOSITION_TEST
         SquareMatrix *A_ = multiply(L, U);
-//        printMatrixWithName(mat_A, "A");
-//        printMatrixWithName(A_, "A'");
-
+#if DEBUG_VERBOSE_INVERSE
+        printMatrixWithName(mat_A, "A");
+        printMatrixWithName(A_, "A'");
+#endif
         int cI = checkIdentity(mat_A, A_);
         printf("%s\n", cI == 0 ? "A == A'" : (cI > 1 ? "A < A'" : "A < A'"));
 
